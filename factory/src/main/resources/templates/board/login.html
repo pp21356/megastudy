@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/bootstrap/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/css/login.css">
+<link rel="stylesheet" href="/css/main.css">
+<style>
+#logo{
+	padding-left: 5px;
+    align-items:center;
+    text-align: center;
+    width: 90px;
+    height: 75px;
+    font-size: 30px;
+}
+nav{
+	display:flex;
+}
+a{
+	text-decoration:none;
+	color:#333;
+}
+#board{
+	padding-right: 10px;
+}
+#logo{
+	padding-left: 5px;
+    align-items:center;
+    text-align: center;
+    width: 90px;
+    height: 75px;
+    font-size: 30px;
+}
+#search{
+    margin: 5px 5px 5px auto;
+}
+</style>
+</head>
+    <body>
+        <div id="layout">
+            <div tabindex="0">
+               <div>
+					<nav id="head">
+						<a href="/main" id="logo">로고</a>
+						<div id="search">
+							<a sec:authorize="isAnonymous()"  th:href="@{/board/login}" class="board" >로그인</a>
+							<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="board">로그아웃</a>
+            				<a sec:authorize="isAnonymous()" th:href="@{/board/signup}" class="board">회원가입</a>
+							<a href="/board" class="board" id="community" >커뮤니티</a>
+						</div>
+					</nav>
+				</div>
+				<hr>
+                 <form th:action="@{/board/login}" method="post">
+                    <div class="container join">
+                        <div class="content">
+                            <div class="joinarea">
+                                <h2 class="jointalk">로그인</h2>
+                                <div class="input">
+                                    <div class="inputtext">
+                                        <h5 class="email">이메일 주소</h5>
+                                    </div>
+                                    <input type="text" name="email" placeholder="예)kream@naver.com" autocomplete="off" id="email" class="input_txt" required/>
+                                </div>
+                           
+                                <div class="input">
+                                    <div class="inputtext">
+                                        <h5 class="email">비밀번호</h5>
+                                    </div>
+                                    <input type="password" name="password" id="password" autocomplete="off" class="input_txt" required/>
+                                </div>
+                         		<br>
+                                <button type="submit" id="btn">로그인</button>
+                                <br><br>
+                                <button type="button" id="signup">회원가입하기</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+       $("#signup").click(function(){
+    	   alert("클릭");
+    	   window.location.href="/board/signup";
+       })
+    </script>
+</html>

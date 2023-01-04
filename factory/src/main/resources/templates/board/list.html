@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" href="/bootstrap/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/css/main.css">
+<title>Insert title here</title>
+</head>
+<body>
+	<div>
+		<nav id="head">
+			<a href="/main" id="logo">로고</a>
+			<div id="search">
+				<a sec:authorize="isAnonymous()"  th:href="@{/board/login}" class="board" >로그인</a>
+				<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="board">로그아웃</a>
+            	<a sec:authorize="isAnonymous()" th:href="@{/board/signup}" class="board">회원가입</a>
+				<a href="/board" class="board" id="community" >커뮤니티</a>
+			</div>
+		</nav>
+	</div>
+	<hr>
+	<h2 style="text-align:center; padding-top:10px; padding-bottom:10px">게시판</h2>
+	<select class="form-select" id="genre" aria-label="Default select example" style="width:25%; margin:auto;">
+		<option id="all" value="all" selected>전체</option>
+		<option value="thrill">스릴러</option>
+		<option value="romance">로멘스</option>
+		<option value="comedy">코미디</option>
+		<option value="music">뮤지컬</option>
+		<option value="fantasy">판타지</option>
+		<option value="action">액션</option>
+		<option value="other">기타</option>
+	  </select>
+	<!--<table class="table table-dark">
+		<thead>
+			<tr>
+				<th>번호</th>
+				<th>제목</th>
+				<th class="writer">작성자</th>
+				<th class="regdate">작성일</th>
+				<th class="updatedate">수정일</th>
+			</tr>
+		</thead>
+		<tbody>
+		<th:block th:each="board:${list}">
+			<tr th:object="${board}">
+				<td th:text="*{bno}"></td>
+				<td><a th:text="*{title}" th:href="@{/board/get(bno=*{bno})}"></a></td>
+				<td class="writer" th:text="*{username}"></td>
+				<td class="regdate" th:text="*{regdate}"></td>
+				<td class="updatedate" th:text="*{updatedate}"></td>
+			</tr>
+		</th:block>	
+	</table>
+	 -->
+	<div style="display:flex">
+		<input type="button" id="write" value="글쓰기" style=" margin: 5px 40px 10px auto;">
+	</div>
+	
+	<div class="container text-center">
+  		<div class="row">
+    		<div class="col" th:each="board:${list}">
+      			<div class="box">
+					<h3 th:text="${board.title}">test</h3>
+					<img class="thum" th:src="@{/img/} + ${board.image}" th:onclick="|location.href='@{/board/}${board.bno}'|" th:onerror="this.onerror=null; this.src='img/noimage.png';"></img>
+				</div>
+    		</div>
+    		<div id="page" th:object="${pageMaker}">
+				<div style="text-align: center;">
+					<th:block th:each="num : ${#numbers.sequence(pageMaker.getStartPage(), pageMaker.getEndPage())}">
+						<code th:if="${pageMaker.criteria.getPageNum() == num}" th:text="${num}"></code>
+						<a class="changePage" id="change" th:unless="${pageMaker.criteria.getPageNum() == num}" th:href="${num}">
+						<code th:text="${num}"></code></a>
+					</th:block>
+				</div>
+				<form action="/board/changepage" th:object="${criteria}" id="pageForm">
+					<input type="hidden" name="pageNum" th:field="*{pageNum}">
+					<input type="hidden" name="amount" th:field="*{amount}">
+					<input type="hidden" name="type" th:field="*{type}">
+					<input type="hidden" name="keyword" th:field="*{keyword}">
+					<input type="hidden" name="categorie" th:field="*{categorie}">
+				</form>
+			</div>
+  		</div>
+	</div>
+	<!--  
+	<div id="page" th:object="${pageMaker}">
+		<div style="text-align: center;">
+			
+			<th:block th:each="num : ${#numbers.sequence(pageMaker.getStartPage(), pageMaker.getEndPage())}">
+				<code th:if="${pageMaker.criteria.getPageNum() == num}" th:text="${num}"></code>
+				<a class="changePage" th:unless="${pageMaker.criteria.getPageNum() == num}" th:href="${num}">
+				<code th:text="${num}"></code></a>
+			</th:block>
+	
+			
+		</div>
+		<form action="/board/changepage" th:object="${criteria}" id="pageForm">
+			<input type="hidden" name="pageNum" th:field="*{pageNum}">
+			<input type="hidden" name="amount" th:field="*{amount}">
+			<input type="hidden" name="type" th:field="*{type}">
+			<input type="hidden" name="keyword" th:field="*{keyword}">
+			<input type="hidden" name="categorie" th:field="*{categorie}">
+		</form>
+	</div>
+	-->
+	 <input type="hidden" id="cate" th:value="${cate}">
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+	let pageForm = $("#pageForm");
+	
+	
+	
+	
+	$(document).ready(function(){
+		
+		var cate = $("#cate").val();
+		console.log(cate);
+		if(cate!=""){
+			$('#genre').val(cate).prop("selected",true);
+		}
+	});
+	
+	
+	
+	$("#write").click(function(e){
+		location.href='board/register'
+	})
+	
+	$(document).on('click', '#change',function(e){
+			e.preventDefault();
+	
+		    
+			pageForm.find("input[name='pageNum']").val($(this).attr("href"));
+			pageForm.find("input[name='categorie']").val($("#genre option:selected").val());
+		
+			pageForm.submit();
+			
+	});
+	
+	
+	$("#genre").on("change",function(){
+		
+		var pageNum = "1";
+		var amount = "10";
+		var genre = $("#genre option:selected").val();
+		console.log(pageForm);
+		
+		if(genre==$("#all").val()){
+			console.log("all선택");
+			
+			$.ajax({
+				type : 'post',
+				url : '/board',
+				data : {
+					pageNum : pageNum,
+					amount : amount,
+				},
+				beforeSend: function (jqXHR, settings) {
+			           var header = $("meta[name='_csrf_header']").attr("content");
+			           var token = $("meta[name='_csrf']").attr("content");
+			           jqXHR.setRequestHeader(header, token);
+				},
+				success : function(data){
+					console.log(data);
+					$(".row").replaceWith(data);
+					$("a.changePage").bind('click');
+					$('#genre').val(genre).prop("selected",true);
+					
+					pageForm.appendTo('body');
+            	},
+           	 	error : function(data){
+               		 alert('error');
+           		}
+			});
+			
+			return;
+		}
+
+		$.ajax({
+			type : 'post',
+			url : '/board/genre',
+			data : {
+				pageNum : pageNum,
+				amount : amount,
+				categorie : genre
+			},
+			beforeSend: function (jqXHR, settings) {
+		           var header = $("meta[name='_csrf_header']").attr("content");
+		           var token = $("meta[name='_csrf']").attr("content");
+		           jqXHR.setRequestHeader(header, token);
+			},
+			success : function(data){
+            	$(".row").replaceWith(data);
+            	$("a.changePage").bind('click');
+            	$('#genre').val(genre).prop("selected",true);
+            	pageForm.appendTo('body');
+        	},
+       	 	error : function(data){
+           		 alert('error');
+       		}
+		});
+	});
+	
+	
+	
+</script>
+</html>

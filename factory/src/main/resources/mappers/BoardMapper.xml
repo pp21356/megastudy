@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysite.factory.mappers.BoardMapper">
+	<select id="getList" resultType="com.mysite.factory.vo.BoardVO">
+		<![CDATA[
+		select /*+ index_desc(tb PK_BOARD) */ 
+		* from tbl_board tb where bno > 0
+		]]>
+	</select>
+	<!--<sql id="criteria">
+		<if test="type != null and keyword != null">
+			<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach item="type" collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'T'.toString()">
+							(TITLE LIKE '%'||#{keyword}||'%')
+						</when>
+						<when test="type == 'C'.toString()">
+							(CONTENT LIKE '%'||#{keyword}||'%')
+						</when>
+						<when test="type == 'W'.toString()">
+							(USERNAME LIKE '%'||#{keyword}||'%')
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+		</if>
+	</sql> -->
+	<select id="getListWithPaging" resultType="com.mysite.factory.vo.BoardVO">
+		<![CDATA[
+		select bno, title, content, username, regdate, updatedate, categorie, image
+		from(
+				select /*+ index_desc(tb PK_BOARD) */ 
+					rownum rn, bno, title, content, username ,regdate, updatedate , categorie, image
+				from tbl_board tb 
+				where 
+		]]>
+		
+		<!--<include refid="criteria"></include>-->
+				
+		<![CDATA[		
+				rownum <= #{pageNum}*#{amount}	
+			)
+		where rn>(#{pageNum}-1)*#{amount}
+		]]>
+	</select>
+	  
+	<select id="getListWithPagingGenre" resultType="com.mysite.factory.vo.BoardVO">
+		<![CDATA[
+		select bno, title, content, username, regdate, updatedate, categorie, image
+		from(
+				select /*+ index_desc(tb PK_BOARD) */ 
+					rownum rn, bno, title, content, username ,regdate, updatedate , categorie, image
+				from tbl_board tb 
+				where 
+		]]>
+		
+		<!--<include refid="criteria"></include>-->
+				
+		<![CDATA[		
+				rownum <= #{pageNum}*#{amount} and categorie= #{categorie}
+			)
+		where rn>(#{pageNum}-1)*#{amount}
+		]]>
+	</select>
+	  
+	<select id="getTotal" resultType="_int">
+		<![CDATA[
+			select count(*) from tbl_board where
+		]]>
+		<!--<include refid="criteria"></include>-->
+		<![CDATA[
+			bno > 0
+		]]>
+	</select>
+	
+	<select id="getTotalGenre" resultType="_int">
+		<![CDATA[
+			select count(*) from tbl_board where
+		]]>
+		<!--<include refid="criteria"></include>-->
+		<![CDATA[
+			bno > 0 and categorie=#{categorie}
+		]]>
+	</select>
+	
+	
+	<select id="getBoard" resultType="com.mysite.factory.vo.BoardVO">
+		<![CDATA[
+				select * from tbl_board where
+			]]>
+			<!--<include refid="criteria"></include>-->
+			<![CDATA[
+				bno = #{bno}
+			]]>
+	</select>
+	
+	<insert id="insert">
+		insert into tbl_board(bno, title, content, username, categorie, image) 
+		values(seq_board.nextval, #{title}, #{content}, #{username}, #{categorie}, #{image})
+	</insert>
+
+</mapper>

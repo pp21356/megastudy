@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="bootstrap/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/css/main.css">
+<title>Insert title here</title>
+</head>
+<body>
+	<div>
+		<nav id="head">
+			<a href="" id="logo">로고</a>
+			<div id="search">
+				<a sec:authorize="isAnonymous()"  th:href="@{/board/login}" class="board" >로그인</a>
+				<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="board">로그아웃</a>
+            	<a sec:authorize="isAnonymous()" th:href="@{/board/signup}" class="board">회원가입</a>
+				<a href="/board" class="board" id="community" >커뮤니티</a>
+			</div>
+		</nav>
+	</div>
+	<hr>
+	<div class="mapsearch">
+		<input type="text" name="area" id="input1" placeholder="지역이름으로 검색하기" style="height:30px">
+		<input type="button" value="검색" id="input2">
+	</div>
+	<div class="map">
+		<div id="map" style="width:100%;height:100%;"></div>
+	</div>
+	
+</body>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=910852feca5d660003177c6730791ad7&libraries=services"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script th:inline="javascript">
+	var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+	var options = { //지도를 생성할 때 필요한 기본 옵션
+		center: new kakao.maps.LatLng(37.55392482, 126.9676059), //지도의 중심좌표.
+		level: 3 //지도의 레벨(확대, 축소 정도)
+	};
+	
+	var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+	
+	/*var positions = [
+	    {
+	       
+	        latlng: new kakao.maps.LatLng(33.450705, 126.570677)
+	    },
+	    {
+	       
+	        latlng: new kakao.maps.LatLng(33.450936, 126.569477)
+	    },
+	    {
+	      
+	        latlng: new kakao.maps.LatLng(33.450879, 126.569940)
+	    },
+	    {
+	       
+	        latlng: new kakao.maps.LatLng(33.451393, 126.570738)
+	    }
+	];*/
+			var positions = [
+				
+	/*<![CDATA[*/
+  		/*[# th:each="marker : ${marker}"]*/
+  				{
+        			latlng: new kakao.maps.LatLng(/*[[${marker.latitude}]]*/, /*[[${marker.longitude}]]*/)
+        		},
+    	/*[/]*/
+	/*]]>*/
+			];
+	
+	// 마커 이미지의 이미지 주소입니다
+	var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; 
+	    
+	for (var i = 0; i < positions.length; i ++) {
+	    
+	    // 마커 이미지의 이미지 크기 입니다
+	    var imageSize = new kakao.maps.Size(24, 35); 
+	    
+	    // 마커 이미지를 생성합니다    
+	    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+	    
+	    // 마커를 생성합니다
+	    var marker = new kakao.maps.Marker({
+	        map: map, // 마커를 표시할 지도
+	        position: positions[i].latlng, // 마커를 표시할 위치
+	        image : markerImage // 마커 이미지 
+	    });
+	}
+	
+	//검색된 조건에 따라 검색결과보여주기
+	$("#input2").click(function(e){
+		var name = $("#input1").val();
+		var geocoder = new kakao.maps.services.Geocoder();
+		// 주소로 좌표를 검색합니다
+		geocoder.addressSearch(name, function(result, status) {
+
+		    // 정상적으로 검색이 완료됐으면 
+		     if (status === kakao.maps.services.Status.OK) {
+
+		        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+
+		        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+		        map.setCenter(coords);
+		    } 
+		}); 
+	});
+	
+	
+	
+</script>
+</html>

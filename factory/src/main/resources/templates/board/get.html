@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/bootstrap/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/css/main.css">
+<title>Insert title here</title>
+</head>
+<body>
+	<div>
+		<nav id="head">
+			<a href="/main" id="logo">로고</a>
+			<div id="search">
+				<a sec:authorize="isAnonymous()"  th:href="@{/board/login}" class="board" >로그인</a>
+				<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="board">로그아웃</a>
+            	<a sec:authorize="isAnonymous()" th:href="@{/board/signup}" class="board">회원가입</a>
+				<a href="/board" class="board" id="community" >커뮤니티</a>
+			</div>
+		</nav>
+	</div>
+	<hr>
+	<h2 th:text="${board.categorie}" style=" display:flex; justify-content:center;"></h2>
+	<h2 th:text="${board.title}" style=" display:flex; justify-content:center;"></h2>
+	<div class="contentbox">
+		<img class="thum2" th:src="@{/img/} + ${board.image}" th:onerror="this.onerror=null; this.src='img/noimage.png';"></img>
+	</div>
+	<div class="contentbox">
+		<div id="content" th:text="${board.content}"></div>
+	</div>
+</body>
+</html>

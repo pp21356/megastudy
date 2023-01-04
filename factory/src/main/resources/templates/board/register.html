@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--  <html lang="ko" xmlns:th="http://www.thymeleaf.org">-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+<link rel="stylesheet" href="/bootstrap/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="/css/main.css">
+<title>Insert title here</title>
+</head>
+<body>
+	<div>
+		<nav id="head">
+			<a href="/main" id="logo">로고</a>
+			<div id="search">
+				<a sec:authorize="isAnonymous()"  th:href="@{/board/login}" class="board" >로그인</a>
+				<a sec:authorize="isAuthenticated()" th:href="@{/logout}" class="board">로그아웃</a>
+            	<a sec:authorize="isAnonymous()" th:href="@{/board/signup}" class="board">회원가입</a>
+				<a href="/board" class="board" id="community" >커뮤니티</a>
+			</div>
+		</nav>
+	</div>
+	<hr>
+	
+	<div>
+	<form action="/upload/uploadAjaxAction" method="post">
+		
+		<input type="text" name="title" style=" display:flex; margin:20px auto; width:300px; " placeholder="제목을 입력하세요"/>
+		<h3 style=" display:flex; margin:20px auto 20px auto; width:300px; justify-content:center; ">장르선택</h3>
+		<div style=" display:flex; margin:20px auto 20px auto; width:100%; justify-content:center; ">
+		<label><input type="radio" name="categorie" value="thrill"/>스릴러</label>
+		<label><input type="radio" name="categorie" value="comedy"/>코미디</label>
+		<label><input type="radio" name="categorie" value="romance"/>로멘스</label>
+		<label><input type="radio" name="categorie" value="music"/>뮤지컬</label>
+		<label><input type="radio" name="categorie" value="fantasy"/>판타지</label>
+		<label><input type="radio" name="categorie" value="action"/>액션</label>
+		<label><input type="radio" name="categorie" value="other"/>기타</label>
+		</div>
+		<textarea name="content" cols="100" rows="15" style=" display:flex; margin:20px auto;" placeholder="내용을 입력하세요"></textarea>
+		<div class="uploadDiv">
+		<input type="file" name="uploadFile" style="border-radius:0px; display:flex; margin:20px auto;"/>
+		</div>
+		<button type="button" id="submitBtn" style=" display:flex; margin:20px auto 20px auto; width:300px; justify-content:center;">업로드</button>
+	</form>
+	</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+	
+	
+	$(document).ready(function(){
+		let regex = new RegExp("(.*?)\.(bmp|png|jpg|jpeg)$");
+		let maxSize = 5242880; // 5MB
+		let inputFile = $(".uploadDiv input");
+		
+		function checkExtension(fileName , fileSize){
+			if(!regex.test(fileName)){
+				alert("업로드할 수 없는 파일 형식입니다.");
+				return false;
+			}
+			if(fileSize >= maxSize){
+				alert("용량이 너무큽니다.");
+				return false;
+			}
+			if(!$("input:radio[name=categorie]").is(':checked')) {   
+				alert("장르를 1개 이상 선택해 주세요.");
+				return false; 
+			}
+			return true;
+		};
+		
+		/*$("input[type='file']").change(function(e){
+			var checkFile=$("input[name='uploadFile']").val();
+			var checkFileSize = $("input[name='uploadFile']")[0].files[0].size;
+			console.log("파일 등록");
+			console.log(checkFile);
+			console.log(checkFileSize);
+			
+			checkExtension(checkFile, checkFileSize);
+		})*/
+		
+		$("#submitBtn").click(function(e){
+			let data= new FormData();
+			let inputFile = $("input[name='uploadFile']");
+			let files= inputFile[0].files[0];
+			console.log(files);
+			
+			// formData에 file추가
+		
+			if(checkExtension(files.name, files.size)){
+				console.log("11" + files.name);
+				console.log(files.name);
+				data.append("uploadFile", files)
+			}
+			
+			data.append("title", $('[name=title]').val());
+			data.append("content", $('[name=content]').val());
+			data.append("categorie", $("input[name=categorie]:checked").val());
+			data.append("image", files.name);
+			console.log($("input[name=categorie]:checked").val());
+			console.log(files.name);
+			console.log(data);
+			
+			$.ajax({
+				url: "/upload/uploadAjaxAction",
+				processData : false,
+				contentType : false,
+				data : data,
+				type : "POST",
+				beforeSend: function (jqXHR, settings) {
+			           var header = $("meta[name='_csrf_header']").attr("content");
+			           var token = $("meta[name='_csrf']").attr("content");
+			           jqXHR.setRequestHeader(header, token);
+				},
+				success: function(result){
+					alert("upload OK");
+					console.log(result);
+					window.location.href="/board";
+				}
+			});
+
+		});
+	
+		
+	});
+</script>
+</html>

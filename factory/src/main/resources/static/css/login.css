@@ -1,0 +1,156 @@
+body, button, input, select, table, textarea {
+    font-family: -apple-system,BlinkMacSystemFont,Roboto,AppleSDGothicNeo-Regular,NanumBarunGothic,NanumGothic,³ª´®°íµñ,Segoe UI,Helveica,Arial,Malgun Gothic,Dotum,sans-serif;
+    color: #222;
+    
+}
+* {margin:0;padding:0;vertical-align:middle;box-sizing:border-box;}
+html, body {width:100%;height:100%;}
+li, ol, ul {
+    list-style: none;
+    margin: 0 0 0 15px;
+}
+
+input{
+    padding: 0;
+    outline: 0;
+    border: 0;
+    resize: none;
+    border-radius: 0;
+    background-color: transparent;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+}
+a{
+    color: inherit;
+    -webkit-tap-highlight-color: rgba(0,0,0,.1);
+}
+
+#header{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background-color: #fff;
+        height: 100px;
+}
+
+#header #header_top{
+    box-shadow: 0 1px 0 0 rgb(0 0 0 / 10%);
+}
+
+#header #header_top #top_inner{
+    display: flex;
+    padding: 8px 40px;
+}
+
+
+
+#header #header_top #top_inner ul {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-left: auto;
+}
+
+#header #header_top #top_inner ul li a {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    font-size: 12px;
+    letter-spacing: -.06px;
+    color: rgba(34,34,34,.8);
+    text-decoration: none;
+}
+
+#header #main_inner {
+    display: flex;
+    padding: 0 40px;
+    height: 68px;
+    min-width: 320px;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+#header #header_main #main_inner #gnb_area{
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-left: auto;
+}
+
+#header #header_main #main_inner #gnb_area #gnb ul {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    margin-left: auto;
+}
+nav{
+    display: block;
+}
+
+#header #header_main #main_inner #gnb_area #gnb ul li a{
+    margin-right: 40px;
+    text-decoration: none;
+    color: rgba(34,34,34,.8);
+    position: relative;
+    font-size: 15px;
+    letter-spacing: -.15px;
+}
+
+.container{
+    padding-top: 1px;
+}
+.join .content{
+    margin: 0 auto;
+    padding: 0 40px;
+    max-width: 1280px;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    height: 100%;
+}
+.joinarea{
+    margin: 0 auto;
+    padding: 58px 0 160px;
+    width: 400px;
+}
+.jointalk{
+    padding-bottom: 42px;
+    text-align: center;
+    font-size: 32px;
+    letter-spacing: -.48px;
+    color: #000;
+}
+
+.email::after{
+    content: "*";
+    top: -2px;
+    right: 0
+}
+
+.input_txt{
+    padding: 8px 0;
+    width: 100%;
+    font-size: 15px;
+    letter-spacing: -.15px;
+    line-height: 22px;
+    border-bottom: 1px solid #ebebeb;
+}
+.input{
+    padding: 10px 0 14px;
+}
+button{
+    background-color: #ebebeb;
+    color: #000;
+    cursor: default;
+    width: 100%;
+    font-size: 16px;
+    letter-spacing: -.16px;
+    font-weight: 700;
+    height: 52px;
+    line-height: 50px;
+    border-radius: 12px;
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mysite.factory.mappers.MarkerMapper">
+	<select id="getMarkers" resultType="com.mysite.factory.vo.MarkerVO">
+		<![CDATA[
+		select latitude,longitude from tbl_library
+		]]>
+	</select>
+</mapper>
